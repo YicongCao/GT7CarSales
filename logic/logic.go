@@ -67,31 +67,39 @@ func FetchAndParseDataWithHistory(url string) (today *protocol.SampleData, yeste
 	return today, yesterday, nil
 }
 
-// FormatSampleDataTable 将结构化数据输出为字符画表格（不含每日比赛）
-func FormatSampleDataTable(sd *protocol.SampleData) string {
+// FormatSampleDataTable 将结构化数据输出为字符画表格或文本（不含每日比赛）
+func FormatSampleDataTable(sd *protocol.SampleData, style string) string {
 	var sb strings.Builder
-
-	// 二手车
-	sb.WriteString("【二手车】\n")
-	sb.WriteString(drawCarTableSorted(sd.GetUsedCars()))
-
-	// 传奇车
-	sb.WriteString("\n【传奇车】\n")
+	if style == "text" {
+		sb.WriteString("### Legendary Cars ###\n\n")
+		sb.WriteString(drawCarTextSorted(sd.GetLegendCars()))
+		sb.WriteString("\n### Used Cars ###\n\n")
+		sb.WriteString(drawCarTextSorted(sd.GetUsedCars()))
+		return sb.String()
+	}
+	// 默认表格
+	sb.WriteString("### Legendary Cars ###\n\n")
 	sb.WriteString(drawCarTableSorted(sd.GetLegendCars()))
-
+	sb.WriteString("\n### Used Cars ###\n\n")
+	sb.WriteString(drawCarTableSorted(sd.GetUsedCars()))
 	return sb.String()
 }
 
-// FormatNewCarsTable 输出今日新上架的二手车、传奇车（昨天没有的），字符画表格
-func FormatNewCarsTable(today, yesterday *protocol.SampleData) string {
+// FormatNewCarsTable 输出今日新上架的二手车、传奇车（昨天没有的），支持表格和文本
+func FormatNewCarsTable(today, yesterday *protocol.SampleData, style string) string {
 	var sb strings.Builder
-
-	sb.WriteString("【今日新上架二手车】\n")
-	sb.WriteString(drawCarTableSorted(diffCarList(today.GetUsedCars(), yesterday.GetUsedCars())))
-
-	sb.WriteString("\n【今日新上架传奇车】\n")
+	if style == "text" {
+		sb.WriteString("### Today New Legendary Cars ###\n\n")
+		sb.WriteString(drawCarTextSorted(diffCarList(today.GetLegendCars(), yesterday.GetLegendCars())))
+		sb.WriteString("\n### Today New Used Cars ###\n\n")
+		sb.WriteString(drawCarTextSorted(diffCarList(today.GetUsedCars(), yesterday.GetUsedCars())))
+		return sb.String()
+	}
+	// 默认表格
+	sb.WriteString("### Today New Legendary Cars ###\n\n")
 	sb.WriteString(drawCarTableSorted(diffCarList(today.GetLegendCars(), yesterday.GetLegendCars())))
-
+	sb.WriteString("\n### Today New Used Cars ###\n\n")
+	sb.WriteString(drawCarTableSorted(diffCarList(today.GetUsedCars(), yesterday.GetUsedCars())))
 	return sb.String()
 }
 
@@ -150,6 +158,62 @@ func drawCarTableSorted(cars []protocol.Car) string {
 	}
 	sb.WriteString(drawTableLine(colWidths))
 	return sb.String()
+}
+
+// 文本样式输出车辆列表
+func drawCarTextSorted(cars []protocol.Car) string {
+	if len(cars) == 0 {
+		return "无\n"
+	}
+	// 先 new=true，再按价格降序
+	sorted := make([]protocol.Car, len(cars))
+	copy(sorted, cars)
+	sort.SliceStable(sorted, func(i, j int) bool {
+		if sorted[i].New != sorted[j].New {
+			return sorted[i].New // true在前
+		}
+		return sorted[i].Credits > sorted[j].Credits
+	})
+	var sb strings.Builder
+	for _, car := range sorted {
+		sb.WriteString(fmt.Sprintf("[%s]\n", car.Manufacturer))
+		name := car.Name
+		if car.New {
+			name = "*" + name
+		}
+		sb.WriteString(fmt.Sprintf("Model: %s, Price: %s\n", name, formatCarPrice(car)))
+		if car.State != "normal" {
+			sb.WriteString(fmt.Sprintf("Status: %s\n", formatCarState(car.State)))
+		}
+		remark := joinSpecial(car)
+		if strings.TrimSpace(remark) != "" {
+			sb.WriteString(fmt.Sprintf("Remarks: %s\n", remark))
+		}
+		sb.WriteString("\n")
+	}
+	return sb.String()
+}
+
+// 格式化价格文本
+func formatCarPrice(car protocol.Car) string {
+	if car.Credits >= 10000 {
+		return fmt.Sprintf("%.1f 万", float64(car.Credits)/10000)
+	}
+	return fmt.Sprintf("%d", car.Credits)
+}
+
+// 格式化状态文本
+func formatCarState(state string) string {
+	switch state {
+	case "normal":
+		return state
+	case "limited":
+		return state
+	case "soldout":
+		return state
+	default:
+		return state
+	}
 }
 
 // 合并奖励、奖杯、抽奖为一列

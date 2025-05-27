@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 	"unicode/utf8"
 )
@@ -23,7 +24,7 @@ func SendBotMarkdown(apikey string, markdown string) error {
 
 		payload := map[string]interface{}{
 			"msgtype": "text",
-			"text":    map[string]string{"content": part},
+			"text":    map[string]string{"content": strings.TrimSpace(part)},
 		}
 		body, err := json.Marshal(payload)
 		if err != nil {

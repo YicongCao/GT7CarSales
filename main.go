@@ -13,6 +13,7 @@ import (
 type Config struct {
 	WxBotAPIKey string `json:"wxBotAPIKey"`
 	EnableWxBot bool   `json:"enableWxBot"`
+	Style       string `json:"style"`
 }
 
 const dataURL = "https://ddm999.github.io/gt7info/data.json"
@@ -42,21 +43,21 @@ func main() {
 		log.Fatalf("拉取数据失败: %v", err)
 	}
 
-	// 输出全部数据表格
-	fullTable := logic.FormatSampleDataTable(today)
+	// 输出全部数据表格或文本
+	fullTable := logic.FormatSampleDataTable(today, cfg.Style)
 	fmt.Println(fullTable)
 	if cfg.EnableWxBot {
-		if err := wxwork.SendBotMarkdown(cfg.WxBotAPIKey, "GT7车辆信息\n```\n"+fullTable+"\n```"); err != nil {
+		if err := wxwork.SendBotMarkdown(cfg.WxBotAPIKey, "GT7 在售车辆\n\n"+fullTable+"\n"); err != nil {
 			log.Printf("推送企业微信失败: %v", err)
 		}
 	}
 
-	// 输出新车表格
+	// 输出新车表格或文本
 	if yesterday != nil {
-		newCarsTable := logic.FormatNewCarsTable(today, yesterday)
+		newCarsTable := logic.FormatNewCarsTable(today, yesterday, cfg.Style)
 		fmt.Println(newCarsTable)
 		if cfg.EnableWxBot {
-			if err := wxwork.SendBotMarkdown(cfg.WxBotAPIKey, "GT7今日新上架\n```\n"+newCarsTable+"\n```"); err != nil {
+			if err := wxwork.SendBotMarkdown(cfg.WxBotAPIKey, "GT7 今日新上架\n\n"+newCarsTable+"\n"); err != nil {
 				log.Printf("推送企业微信失败: %v", err)
 			}
 		}

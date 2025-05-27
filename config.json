@@ -1,4 +1,5 @@
 {
   "wxBotAPIKey": "YOUR_WXWORK_BOT_API_KEY",
-  "enableWxBot": false
+  "enableWxBot": false,
+  "style": "table"
 }
