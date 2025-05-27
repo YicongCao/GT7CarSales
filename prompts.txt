@@ -1,0 +1,21 @@
+解析 sample_data.json，并生成能够对其反序列化的 golang struct 定义和外部方便使用的功能函数，保存到 protocol 包的 protocol.go 文件。
+
+新建一个 fetcher 包，包含函数，用来从 URL (https://ddm999.github.io/gt7info/data.json) 抓取，并将响应包内容的 JSON 返回给调用者。
+
+新建一个 wxwork 包，实现一个发 bot 推送消息的函数并导出，bot 的 apikey、推送内容的 markdown 原文都通过参数传进来。
+
+新建一个 logic 包，实现一个函数：使用 fetcher 包从 URL (https://ddm999.github.io/gt7info/data.json) 抓取 JSON，然后用 protocol 包来解析成结构化的车辆数据（包含二手车、传奇车和每日比赛）并返回。然后再实现一个函数，将结构化的数据，按二手车、传奇车、每日比赛三个板块，输出成字符串，格式采用字符画拼成的表格(注意不要用 markdown 表格，而是传统的字符画表格，像命令行工具那样)，使用空格作为左对齐的符号，表格列出主要信息和关键信息即可。谢谢～
+
+在 logic 包中新增一个 FetchAndParseData 函数的升级版：将拉取到的 JSON 数据按gt7cars+日期文件名的格式保存到 history 目录，然后返回数据包含两部分，一个是今日最新数据、一个是昨日数据。
+
+在 logic 包中新增一个 FormatSampleDataTable 函数的升级版：将今日、昨日数据共同作为输入参数，输出今天新上架的二手车、传奇车（也就是昨天没有的），用类似的字符画表格方式输出成字符串返回。
+
+新建 main.go，实现主要逻辑：从 URL 拉取今日和昨日数据 (https://ddm999.github.io/gt7info/data.json) 并解析，然后用 FormatSampleDataTable 将结构化输出成字符画表格并打印出来、推送到企业微信 bot，再用 FormatNewCarsTable 函数将新车输出并打印、然后也推送到企业微信 bot。将 URL、企微 bot apikey 定义到 const 区段，并引入 enable_wxbot 布尔值用来控制是否推送到企业微信，默认为 false。
+
+你做得不错，现在按我说的改进代码：
+- 将 wxBotAPIKey 和 enableWxBot 转移到 config.json 文件中，并改为从该文件读取；
+- FormatSampleDataTable 函数不再输出每日比赛部分
+- FormatSampleDataTable 和 FormatNewCarsTable 函数输出二手车时，将 "new" 字段为 true 的顺序放到最前面，然后次一级的排序条件是按价格从高到低，并在车辆名称前添加星号 * 作为前缀。然后去掉这些列：ID, 地区, 新, 引擎互换, 抽奖。
+- 将奖励、奖杯、抽奖合成一列，然后合并到一起显示。另外，表格列不要用中文，要用英文。
+
+添加 .gitignore 文件，忽略 gt7_car_sales 这个二进制文件、history 目录
