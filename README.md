@@ -1,0 +1,61 @@
+# GT7 Car Sales
+
+本工程使用从 [ddm999](https://ddm999.github.io/gt7info) 获取的 GT7 每日车辆数据，包含二手车、传奇赛车，并将其格式化并推送到企业微信 Bot。
+
+示例输出内容如下：
+
+【二手车】
++----------+-------------------------+----------+--------+--------------------+
+|Maker     |Name                     |Price     |State   |Special             |
++----------+-------------------------+----------+--------+--------------------+
+|Ford      |*Escort RS Cosworth '92  |150000    |normal  |                    |
+|Ford      |*Escort RS Cosworth '92  |150000    |normal  |                    |
+|Dodge     |*Super Bee '70           |67800     |normal  |                    |
+|Volkswag… |*Golf I GTI '83          |43700     |normal  |                    |
+|Suzuki    |*Swift Sport '07         |12800     |normal  |                    |
+|Porsche   |911 Carrera RS CS (993)… |436200    |limited |                    |
+|Ferrari   |Testarossa '91           |383800    |soldout |                    |
+|Ferrari   |Dino 246 GT '71          |330500    |normal  |                    |
+|BMW       |Z8 '01                   |259000    |limited |                    |
+|Lamborgh… |Gallardo LP 560-4 '08    |249000    |normal  |                    |
+|Porsche   |911 Turbo (930) '81      |216500    |soldout |menubook:31         |
+|Maserati  |GranTurismo S '08        |146000    |soldout |M                   |
+|Audi      |R8 4.2 '07               |143500    |normal  |                    |
+|Toyota    |Supra 3.0GT Turbo A '88  |116800    |limited |menubook:32         |
+|Honda     |Civic Type R (EK) Touri… |114600    |normal  |                    |
+|Dodge     |Viper SRT10 Coupe '06    |112300    |normal  |M                   |
+|Chevrolet |Corvette ZR1 (C6) '09    |107700    |normal  |M                   |
+|Chevrolet |Corvette ZR-1 (C4) '89   |88100     |limited |menubook:27         |
+|Pontiac   |Firebird Trans Am '78    |87800     |normal  |                    |
+|BMW       |M3 '97                   |84200     |limited |                    |
+|Mitsubis… |Lancer Evolution V GSR … |73400     |soldout |                    |
+|Mazda     |RX-7 GT-X (FC) '90       |62900     |limited |mission:Beyond The… |
+|Nissan    |Silvia K's Aero (S14) '… |58100     |limited |                    |
+|Chevrolet |Corvette Z06 (C5) '01    |54200     |normal  |                    |
+|Honda     |Civic Type R (EK) '97    |51900     |normal  |                    |
+|Toyota    |Sports 800 '65           |51400     |normal  |                    |
+|Volvo     |240 SE Estate '93        |48700     |limited |                    |
+|Toyota    |Corolla Levin 1600GT AP… |47400     |limited |menubook:10         |
+|Mitsubis… |GTO Twin Turbo '91       |42300     |normal  |license:B           |
+|Ford      |Mustang Mach 1 '71       |36200     |normal  |menubook:14         |
+|Abarth    |Abarth 500 '09           |21700     |limited |menubook:7          |
+|Fiat      |500 1.2 8V Lounge SS '08 |13800     |normal  |                    |
+|Daihatsu  |Copen '02                |13300     |normal  |                    |
++----------+-------------------------+----------+--------+--------------------+
+
+【传奇车】
++----------+-------------------------+----------+--------+--------------------+
+|Maker     |Name                     |Price     |State   |Special             |
++----------+-------------------------+----------+--------+--------------------+
+|Mercedes… |*CLK-LM '98              |8500000   |normal  |                    |
+|Mercedes… |*300 SL Coupe '54        |1700000   |normal  |                    |
+|Nissan    |*Skyline 2000GT-R (KPGC… |542000    |normal  |                    |
+|McLaren   |McLaren F1 '94           |20000000  |normal  |                    |
+|Ferrari   |330 P4 '67               |20000000  |limited |Three Legendary Ca… |
+|Aston Ma… |DB3S '53                 |6000000   |normal  |                    |
+|Chaparral |2J '70                   |2500000   |soldout |mission:The Sun Al… |
+|Abarth    |1500 Biposto Bertone B.… |1000000   |normal  |                    |
+|Ferrari   |365 GTB4 '71             |610000    |normal  |                    |
+|De Tomaso |Mangusta (Christian Dio… |500000    |normal  |                    |
+|Jaguar    |E-type Coupe '61         |205000    |soldout |                    |
++----------+-------------------------+----------+--------+--------------------+
