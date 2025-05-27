@@ -67,40 +67,28 @@ func FetchAndParseDataWithHistory(url string) (today *protocol.SampleData, yeste
 	return today, yesterday, nil
 }
 
-// FormatSampleDataTable 将结构化数据输出为字符画表格或文本（不含每日比赛）
-func FormatSampleDataTable(sd *protocol.SampleData, style string) string {
-	var sb strings.Builder
+// FormatSampleDataTable 输出二手车和传奇车，返回两个字符串
+func FormatSampleDataTable(sd *protocol.SampleData, style string) (used string, legend string) {
 	if style == "text" {
-		sb.WriteString("### Legendary Cars ###\n\n")
-		sb.WriteString(drawCarTextSorted(sd.GetLegendCars()))
-		sb.WriteString("\n### Used Cars ###\n\n")
-		sb.WriteString(drawCarTextSorted(sd.GetUsedCars()))
-		return sb.String()
+		legend = "### Legendary Cars ###\n\n" + drawCarTextSorted(sd.GetLegendCars())
+		used = "### Used Cars ###\n\n" + drawCarTextSorted(sd.GetUsedCars())
+		return
 	}
-	// 默认表格
-	sb.WriteString("### Legendary Cars ###\n\n")
-	sb.WriteString(drawCarTableSorted(sd.GetLegendCars()))
-	sb.WriteString("\n### Used Cars ###\n\n")
-	sb.WriteString(drawCarTableSorted(sd.GetUsedCars()))
-	return sb.String()
+	legend = "### Legendary Cars ###\n\n" + drawCarTableSorted(sd.GetLegendCars())
+	used = "### Used Cars ###\n\n" + drawCarTableSorted(sd.GetUsedCars())
+	return
 }
 
-// FormatNewCarsTable 输出今日新上架的二手车、传奇车（昨天没有的），支持表格和文本
-func FormatNewCarsTable(today, yesterday *protocol.SampleData, style string) string {
-	var sb strings.Builder
+// FormatNewCarsTable 输出今日新上架的二手车和传奇车，返回两个字符串
+func FormatNewCarsTable(today, yesterday *protocol.SampleData, style string) (used string, legend string) {
 	if style == "text" {
-		sb.WriteString("### Today New Legendary Cars ###\n\n")
-		sb.WriteString(drawCarTextSorted(diffCarList(today.GetLegendCars(), yesterday.GetLegendCars())))
-		sb.WriteString("\n### Today New Used Cars ###\n\n")
-		sb.WriteString(drawCarTextSorted(diffCarList(today.GetUsedCars(), yesterday.GetUsedCars())))
-		return sb.String()
+		legend = "### Today New Legendary Cars ###\n\n" + drawCarTextSorted(diffCarList(today.GetLegendCars(), yesterday.GetLegendCars()))
+		used = "### Today New Used Cars ###\n\n" + drawCarTextSorted(diffCarList(today.GetUsedCars(), yesterday.GetUsedCars()))
+		return
 	}
-	// 默认表格
-	sb.WriteString("### Today New Legendary Cars ###\n\n")
-	sb.WriteString(drawCarTableSorted(diffCarList(today.GetLegendCars(), yesterday.GetLegendCars())))
-	sb.WriteString("\n### Today New Used Cars ###\n\n")
-	sb.WriteString(drawCarTableSorted(diffCarList(today.GetUsedCars(), yesterday.GetUsedCars())))
-	return sb.String()
+	legend = "### Today New Legendary Cars ###\n\n" + drawCarTableSorted(diffCarList(today.GetLegendCars(), yesterday.GetLegendCars()))
+	used = "### Today New Used Cars ###\n\n" + drawCarTableSorted(diffCarList(today.GetUsedCars(), yesterday.GetUsedCars()))
+	return
 }
 
 // diffCarList 返回 todayList 中昨天没有的车辆（以 carid+credits 唯一标识，防止同车id不同价格重复）

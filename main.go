@@ -44,20 +44,28 @@ func main() {
 	}
 
 	// 输出全部数据表格或文本
-	fullTable := logic.FormatSampleDataTable(today, cfg.Style)
-	fmt.Println(fullTable)
+	usedTable, legendTable := logic.FormatSampleDataTable(today, cfg.Style)
+	fmt.Println(legendTable)
+	fmt.Println(usedTable)
 	if cfg.EnableWxBot {
-		if err := wxwork.SendBotMarkdown(cfg.WxBotAPIKey, "GT7 在售车辆\n\n"+fullTable+"\n"); err != nil {
+		if err := wxwork.SendBotMarkdown(cfg.WxBotAPIKey, "GT7 在售二手车\n\n"+usedTable+"\n"); err != nil {
+			log.Printf("推送企业微信失败: %v", err)
+		}
+		if err := wxwork.SendBotMarkdown(cfg.WxBotAPIKey, "GT7 在售传奇车\n\n"+legendTable+"\n"); err != nil {
 			log.Printf("推送企业微信失败: %v", err)
 		}
 	}
 
 	// 输出新车表格或文本
 	if yesterday != nil {
-		newCarsTable := logic.FormatNewCarsTable(today, yesterday, cfg.Style)
-		fmt.Println(newCarsTable)
+		usedNew, legendNew := logic.FormatNewCarsTable(today, yesterday, cfg.Style)
+		fmt.Println(legendNew)
+		fmt.Println(usedNew)
 		if cfg.EnableWxBot {
-			if err := wxwork.SendBotMarkdown(cfg.WxBotAPIKey, "GT7 今日新上架\n\n"+newCarsTable+"\n"); err != nil {
+			if err := wxwork.SendBotMarkdown(cfg.WxBotAPIKey, "GT7 今日新上架二手车\n\n"+usedNew+"\n"); err != nil {
+				log.Printf("推送企业微信失败: %v", err)
+			}
+			if err := wxwork.SendBotMarkdown(cfg.WxBotAPIKey, "GT7 今日新上架传奇车\n\n"+legendNew+"\n"); err != nil {
 				log.Printf("推送企业微信失败: %v", err)
 			}
 		}
