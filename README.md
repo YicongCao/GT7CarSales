@@ -68,4 +68,6 @@ Sample output goes as follows:
 |De Tomaso |Mangusta (Christian Dio… |500000    |normal  |                    |
 |Jaguar    |E-type Coupe '61         |205000    |soldout |                    |
 +----------+-------------------------+----------+--------+--------------------+
+
+* Aterisk prefix stands for new cars.
 ```
